@@ -4,6 +4,7 @@ import cors from 'cors';
 
 import authRoutes from './routes/authRoutes.js';
 import accountRoutes from './routes/accountRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 dotenv.config();
 
@@ -14,7 +15,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/account', accountRoutes);
-app.use('/api/users', accountRoutes); // For GET /api/users mapping
+app.use('/api/users', userRoutes);
 
 const PORT = process.env.PORT || 5000;
 
