@@ -3,7 +3,7 @@ import { supabase } from '../config/supabaseClient.js';
 export const getBalance = async (req, res) => {
   try {
     const { data: user, error } = await supabase
-      .from('Users')
+      .from('users')
       .select('balance')
       .eq('id', req.user.id)
       .single();
@@ -19,7 +19,7 @@ export const getBalance = async (req, res) => {
 export const getStatement = async (req, res) => {
   try {
     const { data: transactions, error } = await supabase
-      .from('Transactions')
+      .from('transactions')
       .select(`
         id,
         amount,
@@ -72,7 +72,7 @@ export const transfer = async (req, res) => {
 
   try {
     const { data: sender, error: senderError } = await supabase
-      .from('Users')
+      .from('users')
       .select('balance')
       .eq('id', req.user.id)
       .single();
@@ -84,7 +84,7 @@ export const transfer = async (req, res) => {
     }
 
     const { data: receiver, error: receiverError } = await supabase
-      .from('Users')
+      .from('users')
       .select('balance')
       .eq('id', receiver_id)
       .single();
@@ -93,18 +93,18 @@ export const transfer = async (req, res) => {
       return res.status(404).json({ message: 'Receiver not found' });
     }
 
-    await supabase.from('Users').update({ balance: sender.balance - numAmount }).eq('id', req.user.id);
-    await supabase.from('Users').update({ balance: receiver.balance + numAmount }).eq('id', receiver_id);
+    await supabase.from('users').update({ balance: sender.balance - numAmount }).eq('id', req.user.id);
+    await supabase.from('users').update({ balance: receiver.balance + numAmount }).eq('id', receiver_id);
 
     // Create 2 entries
-    const { error: t1Err } = await supabase.from('Transactions').insert([{
+    const { error: t1Err } = await supabase.from('transactions').insert([{
       sender_id: req.user.id,
       receiver_id: receiver_id,
       amount: numAmount,
       transaction_type: 'Debit'
     }]);
 
-    const { error: t2Err } = await supabase.from('Transactions').insert([{
+    const { error: t2Err } = await supabase.from('transactions').insert([{
       sender_id: req.user.id,
       receiver_id: receiver_id,
       amount: numAmount,
@@ -123,7 +123,7 @@ export const transfer = async (req, res) => {
 export const getUsers = async (req, res) => {
   try {
     const { data: users, error } = await supabase
-      .from('Users')
+      .from('users')
       .select('id, name, email')
       .neq('id', req.user.id);
 

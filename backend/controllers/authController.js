@@ -7,7 +7,7 @@ export const signup = async (req, res) => {
 
   try {
     const { data: userExists } = await supabase
-      .from('Users')
+      .from('users')
       .select('email')
       .eq('email', email)
       .single();
@@ -20,7 +20,7 @@ export const signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const { data, error } = await supabase
-      .from('Users')
+      .from('users')
       .insert([
         {
           name,
@@ -52,7 +52,7 @@ export const login = async (req, res) => {
 
   try {
     const { data: user, error } = await supabase
-      .from('Users')
+      .from('users')
       .select('*')
       .eq('email', email)
       .single();
